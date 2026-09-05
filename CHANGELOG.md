@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Guitar & Bass Tutor — bundled `plugins/tutor/`: guided drills with mistake
+  tracking and coaching, intonation-aware for fretless instruments.** Part 1
+  is a data catalog of 18 drills per instrument across four skills (pitch &
+  fretboard, rhythm, intonation, technique; guitar-only chord drills are
+  skipped for bass) and three levels, each generated on demand as a
+  directory-form sloppak under `<library>/tutor/` — click track plus, for
+  intonation drills, a root-note drone — using only spec-defined manifest
+  keys and no ffmpeg. Part 2 scores every chart note of a drill on three
+  axes: notes (note_detect's judgments when installed, else the tutor's own
+  tracker), rhythm (signed attack error tagged by beat position), and
+  **intonation** — a YIN tracker in a Web Worker on the instrument input
+  measures each note's landing pitch in cents against the chart's expected
+  pitch (tuning offset, capo and cent offset honoured) plus drift across the
+  hold, so a right-but-20-cents-out fretless note is no longer a "hit".
+  Sessions post to `/api/plugins/tutor/sessions`; `analysis.py` builds a
+  mistake profile (accuracy, timing tendency and consistency, on- vs
+  off-beat, sharp/flat, drift, per-string / per-region weak spots) and
+  rule-based coaching that points at the next drill and speed; a Coach panel
+  aggregates recent sessions. Fretless mode tightens tolerance and switches
+  the wording. Live HUD in the player, end-of-drill report, Settings panel,
+  settings export of `tutor/`, diagnostics contributor. Tests:
+  `tests/plugins/tutor/` (32) + `plugins/tutor/tests/tracker.test.js` (10).
 - **Core reader for source rigs (feedpak 1.18.0).** A pack can declare what a
   MIDI part should sound like by binding a rig; core now reads that binding and
   hands it to the client instead of dropping it. Three parts: the

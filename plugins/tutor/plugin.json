@@ -1,0 +1,26 @@
+{
+  "id": "tutor",
+  "name": "Guitar & Bass Tutor",
+  "version": "0.1.0",
+  "bundled": true,
+  "private": false,
+  "description": "Guided drills for guitar and bass — pitch, rhythm, intonation (fretless-aware) and technique — with mistake tracking and coaching.",
+  "category": "practice",
+  "nav": {
+    "label": "Tutor",
+    "screen": "plugin-tutor"
+  },
+  "screen": "screen.html",
+  "script": "screen.js",
+  "routes": "routes.py",
+  "settings": {
+    "html": "settings.html",
+    "category": "mic",
+    "server_files": [
+      "tutor/"
+    ]
+  },
+  "diagnostics": {
+    "callable": "diagnostics:collect"
+  }
+}

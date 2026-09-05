@@ -1,0 +1,51 @@
+<!-- Tutor screen. Everything dynamic is rendered by screen.js into the
+     mounts below; this file is only the static frame. -->
+<style>
+  .tt-card { transition: transform .12s ease, border-color .12s ease; }
+  .tt-card:hover { transform: translateY(-1px); border-color: rgba(14,165,233,.5); }
+  .tt-pill[aria-pressed="true"] { background: rgba(14,165,233,.18); border-color: rgba(14,165,233,.7); color: #f8fafc; }
+  .tt-level { letter-spacing: .08em; }
+  .tt-meter { position: relative; height: 10px; border-radius: 9999px; background: linear-gradient(90deg,#3b82f6 0%,#22c55e 50%,#ef4444 100%); opacity: .85; }
+  .tt-meter i { position: absolute; top: -4px; width: 4px; height: 18px; margin-left: -2px; border-radius: 2px; background: #fff; box-shadow: 0 0 6px rgba(0,0,0,.6); }
+  .tt-stat b { font-variant-numeric: tabular-nums; }
+</style>
+
+<div id="tt-root" class="max-w-6xl mx-auto px-6 pt-8 pb-16">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-fb-text">Tutor</h1>
+      <p class="text-sm text-fb-textDim mt-1">Short drills for guitar and bass. Play them with your instrument plugged in and the tutor scores notes, rhythm <em>and</em> intonation.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <div id="tt-instruments" class="flex rounded-lg overflow-hidden border border-fb-border/60" role="tablist"></div>
+      <label class="flex items-center gap-2 text-xs text-fb-textDim bg-fb-card/70 border border-fb-border/50 rounded-lg px-3 py-2 cursor-pointer" title="Tighter intonation tolerance and fretless-specific coaching">
+        <input type="checkbox" id="tt-fretless" class="accent-accent">
+        Fretless
+      </label>
+    </div>
+  </div>
+
+  <div id="tt-build-banner" class="hidden mb-6 bg-fb-card/80 border border-fb-border/50 rounded-xl p-4 flex items-center justify-between gap-4">
+    <div>
+      <div class="text-sm font-semibold text-fb-text" id="tt-build-title">Exercises need to be generated once</div>
+      <div class="text-xs text-fb-textDim mt-0.5" id="tt-build-body">The tutor writes each drill as a small song package into your library folder (click track + drone, a few hundred KB each).</div>
+    </div>
+    <button id="tt-build-btn" class="bg-fb-primary hover:bg-fb-primaryHi text-white text-sm font-medium px-4 py-2 rounded-md whitespace-nowrap">Generate exercises</button>
+  </div>
+
+  <div id="tt-coach" class="mb-8"></div>
+
+  <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+    <div id="tt-skills" class="flex flex-wrap gap-2"></div>
+    <div id="tt-summary" class="text-xs text-fb-textDim"></div>
+  </div>
+  <div id="tt-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+  <div class="mt-10">
+    <div class="flex items-end justify-between mb-2">
+      <h2 class="text-lg font-semibold text-fb-text">Recent sessions</h2>
+      <button id="tt-refresh" class="text-xs text-fb-textDim hover:text-fb-text">Refresh</button>
+    </div>
+    <div id="tt-history" class="space-y-1"></div>
+  </div>
+</div>
