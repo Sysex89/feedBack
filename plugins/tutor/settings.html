@@ -1,0 +1,133 @@
+<div class="space-y-6 py-2">
+    <div class="flex items-center justify-between bg-dark-900/50 p-3 rounded-xl border border-gray-800/50">
+        <div>
+            <h3 class="text-sm font-medium text-gray-200">Fretless instrument</h3>
+            <p class="text-[11px] text-gray-500">Tighter intonation tolerance and fretless-specific coaching (hand-position tips instead of fret tips).</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="tutor-fretless" class="sr-only peer" data-tutor-setting="fretless">
+            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+        </label>
+    </div>
+
+    <div class="bg-dark-900/50 p-3 rounded-xl border border-gray-800/50 space-y-4">
+        <div>
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-medium text-gray-200">Intonation tolerance (fretted)</h3>
+                <span class="text-xs text-gray-400" id="tutor-tol-fretted-val"></span>
+            </div>
+            <p class="text-[11px] text-gray-500 mb-1">Notes further than this from the pitch count as sharp / flat.</p>
+            <input type="range" min="5" max="50" step="1" class="w-full accent-accent" data-tutor-setting="toleranceCentsFretted" data-unit="¢">
+        </div>
+        <div>
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-medium text-gray-200">Intonation tolerance (fretless)</h3>
+                <span class="text-xs text-gray-400" id="tutor-tol-fretless-val"></span>
+            </div>
+            <input type="range" min="3" max="30" step="1" class="w-full accent-accent" data-tutor-setting="toleranceCentsFretless" data-unit="¢">
+        </div>
+        <div>
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-medium text-gray-200">Timing tolerance</h3>
+                <span class="text-xs text-gray-400" id="tutor-tol-ms-val"></span>
+            </div>
+            <p class="text-[11px] text-gray-500 mb-1">Attacks outside this window count as early / late.</p>
+            <input type="range" min="20" max="150" step="5" class="w-full accent-accent" data-tutor-setting="toleranceMs" data-unit=" ms">
+        </div>
+        <div>
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-medium text-gray-200">Input latency compensation</h3>
+                <span class="text-xs text-gray-400" id="tutor-lat-val"></span>
+            </div>
+            <p class="text-[11px] text-gray-500 mb-1">Subtracted from every attack the tutor's own pitch tracker hears. If every drill reports you "late" by the same amount, raise this.</p>
+            <input type="range" min="0" max="250" step="5" class="w-full accent-accent" data-tutor-setting="latencyMs" data-unit=" ms">
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between bg-dark-900/50 p-3 rounded-xl border border-gray-800/50">
+        <div>
+            <h3 class="text-sm font-medium text-gray-200">Show the tutor HUD in the player</h3>
+            <p class="text-[11px] text-gray-500">Live cents needle and tallies while a drill plays.</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" data-tutor-setting="hud">
+            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+        </label>
+    </div>
+
+    <div class="flex items-center justify-between bg-dark-900/50 p-3 rounded-xl border border-gray-800/50">
+        <div>
+            <h3 class="text-sm font-medium text-gray-200">Tutor pitch tracker</h3>
+            <p class="text-[11px] text-gray-500">Listens to the instrument input for intonation. Turn off if you only want note_detect's judgments.</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" data-tutor-setting="ownTracker">
+            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent"></div>
+        </label>
+    </div>
+
+    <div class="bg-dark-900/50 p-3 rounded-xl border border-gray-800/50">
+        <h3 class="text-sm font-medium text-gray-200 mb-1">Exercise packs</h3>
+        <p class="text-[11px] text-gray-500 mb-2">Drills live under <code>&lt;library&gt;/tutor/</code>. Regenerate after an update, or to repair a deleted pack.</p>
+        <div class="flex items-center gap-3">
+            <button id="tutor-rebuild" type="button" class="px-3 py-2 rounded bg-accent/80 hover:bg-accent text-white text-sm">Regenerate all packs</button>
+            <button id="tutor-reset" type="button" class="px-3 py-2 rounded bg-red-600/80 hover:bg-red-500 text-white text-sm">Reset session history</button>
+            <span id="tutor-settings-status" class="text-xs text-gray-400" role="status" aria-live="polite"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    // The loader mounts settings.html BEFORE it loads screen.js, so the API
+    // may not exist yet — wait for the ready event in that case.
+    const root = (document.currentScript && document.currentScript.parentElement) || document.getElementById('plugin-settings-tutor');
+    if (!root) return;
+    if (!window.feedBackTutor) { window.addEventListener('tutor:ready', init, { once: true }); return; }
+    init();
+    function init() {
+    const api = window.feedBackTutor;
+    if (!api) return;
+    const s = api.getSettings();
+    const labels = {
+        toleranceCentsFretted: 'tutor-tol-fretted-val', toleranceCentsFretless: 'tutor-tol-fretless-val',
+        toleranceMs: 'tutor-tol-ms-val', latencyMs: 'tutor-lat-val',
+    };
+    root.querySelectorAll('[data-tutor-setting]').forEach((el) => {
+        const key = el.getAttribute('data-tutor-setting');
+        const lab = labels[key] ? document.getElementById(labels[key]) : null;
+        const paint = () => { if (lab) lab.textContent = el.value + (el.getAttribute('data-unit') || ''); };
+        if (el.type === 'checkbox') {
+            el.checked = !!s[key];
+            el.addEventListener('change', () => { api.saveSettings({ [key]: el.checked }); api.refresh(); });
+        } else {
+            el.value = s[key];
+            paint();
+            el.addEventListener('input', () => { paint(); api.saveSettings({ [key]: Number(el.value) }); });
+        }
+    });
+    const status = document.getElementById('tutor-settings-status');
+    const say = (t) => { if (status) status.textContent = t; };
+    const rebuild = document.getElementById('tutor-rebuild');
+    if (rebuild) rebuild.addEventListener('click', async () => {
+        rebuild.disabled = true; say('Generating…');
+        try {
+            const r = await fetch('/api/plugins/tutor/build', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ force: true }) });
+            const j = await r.json().catch(() => ({}));
+            say(r.ok ? ('Generated ' + (j.built || []).length + ' packs.') : (j.error || 'Failed'));
+            if (r.ok && !j.rescan_kicked) fetch('/api/rescan', { method: 'POST' }).catch(() => {});
+        } catch (e) { say('Failed: ' + e.message); }
+        rebuild.disabled = false;
+    });
+    const reset = document.getElementById('tutor-reset');
+    if (reset) reset.addEventListener('click', async () => {
+        if (!confirm('Delete all tutor session history? Personal bests and coaching data are lost.')) return;
+        try {
+            const r = await fetch('/api/plugins/tutor/reset', { method: 'POST' });
+            say(r.ok ? 'History cleared.' : 'Failed');
+            api.refresh();
+        } catch (e) { say('Failed: ' + e.message); }
+    });
+    }
+})();
+</script>
