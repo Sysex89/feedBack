@@ -55,6 +55,9 @@ plugins/drum_highway_3d/__pycache__/
 !plugins/keys_highway_3d/
 !plugins/keys_highway_3d/**
 plugins/keys_highway_3d/__pycache__/
+!plugins/tutor/
+!plugins/tutor/**
+plugins/tutor/__pycache__/
 node_modules/
 test-results/
 playwright-report/
