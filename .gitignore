@@ -39,6 +39,8 @@ plugins/folder_library/__pycache__/
 !plugins/app_tour_settings/**
 !plugins/capability_inspector/
 !plugins/capability_inspector/**
+!plugins/chord_tutor/
+!plugins/chord_tutor/**
 !plugins/minigames/
 !plugins/minigames/**
 plugins/minigames/__pycache__/

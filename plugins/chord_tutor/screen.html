@@ -1,0 +1,225 @@
+<style>
+  /* Chord Tutor — scoped styles. Everything not covered by core's prebuilt
+     Tailwind utilities lives here under .ct-* / #ct-root so the committed
+     stylesheet never needs a rebuild. Tokens: bg #0f172a, card #1e293b,
+     cardMuted #0b1220, primary #0ea5e9, primaryHi #38bdf8, text #f8fafc,
+     textDim #94a3b8, border #334155, low #ef4444, gold #e8c040. */
+  #ct-root kbd { font-size: .7em; padding: 0 .3em; border: 1px solid #334155; border-radius: .25rem; color: #94a3b8; margin-left: .25em; }
+  .ct-btn { padding: .4rem .8rem; border-radius: .375rem; background: #1e293b; color: #f8fafc; border: 1px solid rgba(51,65,85,.6); font-size: .85rem; cursor: pointer; user-select: none; }
+  .ct-btn:hover { background: #334155; }
+  .ct-btn-primary { background: #0ea5e9; border-color: transparent; }
+  .ct-btn-primary:hover { background: #38bdf8; }
+  .ct-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .ct-select { background: #0b1220; color: #f8fafc; border: 1px solid #334155; border-radius: .375rem; padding: .35rem .5rem; font-size: .85rem; }
+  .ct-seg { display: inline-flex; border: 1px solid #334155; border-radius: .375rem; overflow: hidden; }
+  .ct-seg-btn { padding: .3rem .7rem; font-size: .78rem; color: #94a3b8; background: transparent; border: 0; cursor: pointer; user-select: none; }
+  .ct-seg-btn:hover { color: #f8fafc; }
+  .ct-seg-btn.active { background: #0ea5e9; color: #fff; }
+  .ct-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .ct-chip { padding: .3rem .6rem; border-radius: 999px; border: 1px solid #334155; background: #0b1220; color: #f8fafc; font-size: .78rem; line-height: 1.1; text-align: center; cursor: pointer; user-select: none; }
+  .ct-chip small { display: block; color: #94a3b8; font-size: .68rem; }
+  .ct-chip:hover { border-color: #0ea5e9; }
+  .ct-chip.active { background: rgba(14,165,233,.2); border-color: #0ea5e9; }
+  .ct-chip:disabled { opacity: .45; cursor: not-allowed; }
+  .ct-card { background: #1e293b; border: 1px solid rgba(51,65,85,.6); border-radius: .5rem; padding: .6rem; text-align: center; color: #94a3b8; font-size: .75rem; cursor: pointer; user-select: none; display: block; width: 100%; }
+  .ct-card svg { display: block; margin: 0 auto .25rem; max-width: 100%; height: auto; }
+  .ct-card:hover { border-color: #38bdf8; }
+  .ct-card.active { border-color: #0ea5e9; box-shadow: 0 0 0 1px #0ea5e9 inset; }
+  .ct-card-cap { color: #f8fafc; }
+  .ct-badge { display: inline-block; margin: .15rem .1rem 0; padding: 0 .4rem; border-radius: .25rem; font-size: .65rem; background: #0b1220; color: #94a3b8; }
+  .ct-badge-stretch { color: #e8c040; }
+  .ct-focus-svg svg { display: block; max-width: 100%; height: auto; }
+  /* fretboard SVG */
+  .ct-string { stroke: #94a3b8; stroke-width: 1.2; }
+  .ct-fret { stroke: #334155; stroke-width: 1; }
+  .ct-nut { fill: #f8fafc; }
+  .ct-dot { fill: #f8fafc; }
+  .ct-dot-root { fill: #0ea5e9; }
+  .ct-dot-text { font: 700 9px system-ui, sans-serif; fill: #0f172a; pointer-events: none; }
+  .ct-dot-text.ct-sm { font-size: 8px; }
+  .ct-dot-text-root { fill: #fff; }
+  .ct-mute { fill: #94a3b8; font: 12px system-ui, sans-serif; }
+  .ct-frlabel { fill: #94a3b8; font: 10px system-ui, sans-serif; }
+  .ct-foot { fill: #94a3b8; font: 9px system-ui, sans-serif; }
+  .ct-foot-root { fill: #38bdf8; font-weight: 700; }
+  /* wheel */
+  .ct-wheel { display: block; max-width: 420px; margin: 0 auto; }
+  .ct-sector path { fill: #1e293b; stroke: #0f172a; stroke-width: 2; cursor: pointer; transition: fill .12s; }
+  .ct-sector:hover path { fill: #334155; }
+  .ct-sector:focus { outline: none; }
+  .ct-sector:focus-visible path { stroke: #38bdf8; }
+  .ct-sector.ct-dia path { fill: rgba(14,165,233,.35); }
+  .ct-sector.ct-sel path { fill: #0ea5e9; }
+  .ct-sector.ct-lead path { stroke: #e8c040; stroke-dasharray: 4 3; }
+  .ct-sector text { fill: #f8fafc; font: 600 15px system-ui, sans-serif; pointer-events: none; user-select: none; }
+  .ct-sector text.ct-sector-label-inner { font-size: 12px; }
+  .ct-hub { fill: #0b1220; }
+  #ct-hub-key { fill: #f8fafc; font: 700 26px system-ui, sans-serif; }
+  #ct-hub-mode { fill: #94a3b8; font: 11px system-ui, sans-serif; }
+  .ct-arrow { stroke: #94a3b8; fill: none; stroke-width: 2; }
+  .ct-arrow-head { fill: #94a3b8; }
+  /* drill */
+  .ct-field { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .ct-legend { font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: #94a3b8; margin-bottom: .4rem; padding: 0; }
+  .ct-checks { display: flex; flex-wrap: wrap; gap: .3rem .9rem; }
+  .ct-check, .ct-radio, .ct-label { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; color: #f8fafc; }
+  .ct-check input, .ct-radio input { accent-color: #0ea5e9; }
+  .ct-label input[type=range] { accent-color: #0ea5e9; width: 10rem; }
+  .ct-row { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; }
+  .ct-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; min-width: 2.5ch; text-align: right; display: inline-block; }
+  .ct-note { font-size: .75rem; color: #94a3b8; margin-top: .3rem; }
+  .ct-disabled { opacity: .45; pointer-events: none; }
+  .ct-progress { height: .5rem; background: #0b1220; border-radius: 999px; overflow: hidden; }
+  .ct-progress > div { height: 100%; background: #0ea5e9; width: 0; transition: width .1s linear; }
+  .ct-progress.ct-waiting > div { background: #e8c040; }
+  .ct-prompt { font-size: 3rem; font-weight: 800; color: #f8fafc; line-height: 1; }
+  .ct-hidden-shapes { position: relative; }
+  .ct-hidden-shapes > .ct-grid { filter: blur(8px); pointer-events: none; }
+  .ct-hidden-shapes::after { content: "Press R to reveal"; position: absolute; inset: 0; display: grid; place-items: center; color: #94a3b8; font-size: .9rem; }
+  .ct-error { border: 1px solid rgba(239,68,68,.6); background: rgba(239,68,68,.08); color: #fca5a5; border-radius: .5rem; padding: .75rem 1rem; margin-bottom: 1rem; }
+  .ct-form-error { color: #fca5a5; font-size: .85rem; }
+  .ct-empty { border: 1px dashed #334155; border-radius: .5rem; padding: 2rem; text-align: center; color: #94a3b8; }
+  .ct-fine { font-size: .75rem; color: #94a3b8; }
+</style>
+<div id="ct-root" class="max-w-7xl mx-auto px-6 pt-24 pb-16">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+    <div>
+      <h2 class="text-3xl font-bold text-white">Chord Tutor</h2>
+      <p class="text-sm text-fb-textDim mt-1">Movable, barre-free shapes for every key. Pick a key on the wheel, a chord type, then drill.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="ct-mute" type="button" class="ct-btn" aria-pressed="false">Sound: on</button>
+      <span class="text-xs text-fb-textDim">Press <kbd>?</kbd> for shortcuts</span>
+    </div>
+  </div>
+  <div id="ct-error" class="hidden ct-error" role="alert"></div>
+  <div id="ct-body">
+    <div class="fb-tabbar" role="tablist">
+      <button id="ct-tab-browse" type="button" class="fb-tab active" data-tab="browse" role="tab" aria-selected="true">Browse</button>
+      <button id="ct-tab-drill" type="button" class="fb-tab" data-tab="drill" role="tab" aria-selected="false">Drill</button>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <aside class="bg-fb-card border border-fb-border/50 rounded-lg p-4 self-start">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs uppercase tracking-widest text-fb-textDim">Key</span>
+          <div class="ct-seg" role="group" aria-label="Circle direction">
+            <button id="ct-mode-fifths" type="button" class="ct-seg-btn active" data-mode="fifths">Fifths</button>
+            <button id="ct-mode-fourths" type="button" class="ct-seg-btn" data-mode="fourths">Fourths</button>
+          </div>
+        </div>
+        <svg id="ct-wheel" class="ct-wheel w-full" viewBox="0 0 420 420" role="group" aria-label="Circle of fifths — pick a key"></svg>
+        <div class="flex items-center justify-between mt-2">
+          <span class="text-xs uppercase tracking-widest text-fb-textDim">Chords in this key</span>
+          <label class="text-xs text-fb-textDim flex items-center gap-1"><input id="ct-sevenths" type="checkbox"> 7ths</label>
+        </div>
+        <div id="ct-diatonic" class="ct-chips mt-2"></div>
+        <p class="ct-fine mt-2">Neighbours on the wheel are the chords of the key: the three highlighted outer sectors are IV, I, V; the inner ones are ii, vi, iii; the dashed sector is the leading-tone dim.</p>
+      </aside>
+      <section class="lg:col-span-2 min-w-0">
+        <div id="ct-panel-browse" class="fb-tabpanel active" role="tabpanel">
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <label class="text-sm text-fb-textDim">Root <select id="ct-root-select" class="ct-select"></select></label>
+            <label class="text-sm text-fb-textDim">Type <select id="ct-type" class="ct-select"></select></label>
+            <div id="ct-labels" class="ct-seg ml-auto" role="group" aria-label="Dot labels">
+              <button type="button" class="ct-seg-btn active" data-labels="finger">Fingers</button>
+              <button type="button" class="ct-seg-btn" data-labels="interval">Intervals</button>
+              <button type="button" class="ct-seg-btn" data-labels="note">Notes</button>
+            </div>
+          </div>
+          <div id="ct-sets" class="ct-chips mb-4"></div>
+          <div id="ct-focus" class="bg-fb-card border border-fb-border/50 rounded-lg p-4 mb-6 flex flex-wrap gap-6">
+            <div id="ct-focus-svg" class="ct-focus-svg shrink-0"></div>
+            <div class="min-w-0 flex-1">
+              <div id="ct-focus-title" class="text-2xl font-bold text-white"></div>
+              <div id="ct-focus-sub" class="text-sm text-fb-textDim mt-1"></div>
+              <div id="ct-focus-formula" class="font-mono text-sm text-fb-text mt-2"></div>
+              <div id="ct-focus-hint" class="text-xs text-fb-textDim mt-1"></div>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <button id="ct-play" type="button" class="ct-btn ct-btn-primary">Play<kbd>P</kbd></button>
+                <button id="ct-octave" type="button" class="ct-btn" aria-pressed="false">Octave up</button>
+                <button id="ct-prev" type="button" class="ct-btn">← Prev</button>
+                <button id="ct-next" type="button" class="ct-btn">Next →</button>
+              </div>
+            </div>
+          </div>
+          <div id="ct-grid" class="grid grid-cols-2 xl:grid-cols-4 gap-4"></div>
+          <div id="ct-empty" class="hidden ct-empty"></div>
+        </div>
+        <div id="ct-panel-drill" class="fb-tabpanel" role="tabpanel">
+          <form id="ct-drill-setup" class="bg-fb-card border border-fb-border/50 rounded-lg p-4 space-y-4" novalidate>
+            <fieldset class="ct-field">
+              <legend class="ct-legend">Mode</legend>
+              <div id="ct-d-kind" class="ct-checks">
+                <label class="ct-radio"><input type="radio" name="ct-d-kind" value="random" checked> Random chords</label>
+                <label class="ct-radio"><input type="radio" name="ct-d-kind" value="circle"> Walk the circle (from the current key, clockwise)</label>
+                <label class="ct-radio"><input type="radio" name="ct-d-kind" value="diatonic"> Chords in the current key</label>
+              </div>
+            </fieldset>
+            <fieldset class="ct-field" id="ct-d-types-field">
+              <legend class="ct-legend">Chord types</legend>
+              <div id="ct-d-types" class="ct-checks"></div>
+              <p id="ct-d-types-note" class="ct-note hidden">Types come from the key — the <b>7ths</b> toggle on the wheel card decides triads vs sevenths.</p>
+            </fieldset>
+            <fieldset class="ct-field">
+              <legend class="ct-legend">String sets</legend>
+              <div id="ct-d-sets" class="ct-chips"></div>
+            </fieldset>
+            <div class="ct-row">
+              <label class="ct-label">Tempo <input id="ct-d-bpm" type="range" min="30" max="160" step="2" value="60"> <span id="ct-d-bpm-val" class="ct-mono">60</span> bpm</label>
+              <label class="ct-label">Beats per chord
+                <select id="ct-d-beats" class="ct-select"><option value="1">1</option><option value="2">2</option><option value="4" selected>4</option><option value="8">8</option></select>
+              </label>
+              <label class="ct-label">Chords
+                <select id="ct-d-count" class="ct-select"><option value="8">8</option><option value="12" selected>12</option><option value="24">24</option><option value="0">∞</option></select>
+              </label>
+            </div>
+            <div class="ct-row">
+              <label class="ct-check"><input id="ct-d-auto" type="checkbox" checked> Auto-advance</label>
+              <label class="ct-label">Shapes
+                <select id="ct-d-reveal" class="ct-select"><option value="immediate">Show immediately</option><option value="hidden">Hide until R or half-time</option></select>
+              </label>
+              <label class="ct-check"><input id="ct-d-click" type="checkbox"> Metronome click</label>
+            </div>
+            <div id="ct-d-error" class="hidden ct-form-error" role="alert"></div>
+            <button id="ct-d-start" type="submit" class="ct-btn ct-btn-primary">Start drill</button>
+          </form>
+          <div id="ct-drill-run" class="hidden">
+            <div class="bg-fb-card border border-fb-border/50 rounded-lg p-4 mb-4">
+              <div class="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <div id="ct-d-prompt" class="ct-prompt"></div>
+                  <div id="ct-d-numeral" class="text-sm text-fb-textDim mt-1"></div>
+                </div>
+                <div class="text-right">
+                  <div id="ct-d-counter" class="text-sm text-fb-textDim"></div>
+                  <div id="ct-d-beat" class="text-xs text-fb-textDim mt-1"></div>
+                </div>
+              </div>
+              <div id="ct-d-bar" class="ct-progress mt-3"><div id="ct-d-bar-fill"></div></div>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <button id="ct-d-reveal-btn" type="button" class="ct-btn">Reveal<kbd>R</kbd></button>
+                <button id="ct-d-prev" type="button" class="ct-btn">← Prev</button>
+                <button id="ct-d-next" type="button" class="ct-btn">Next →<kbd>N</kbd></button>
+                <button id="ct-d-pause" type="button" class="ct-btn">Pause<kbd>Space</kbd></button>
+                <button id="ct-d-play" type="button" class="ct-btn">Play chord<kbd>P</kbd></button>
+                <button id="ct-d-stop" type="button" class="ct-btn">Stop<kbd>Esc</kbd></button>
+              </div>
+            </div>
+            <div id="ct-d-shapes-wrap">
+              <div id="ct-d-shapes" class="ct-grid grid grid-cols-2 xl:grid-cols-4 gap-4"></div>
+            </div>
+          </div>
+          <div id="ct-drill-done" class="hidden bg-fb-card border border-fb-border/50 rounded-lg p-4">
+            <div class="text-xl font-bold text-white">Drill complete</div>
+            <div id="ct-d-summary" class="text-sm text-fb-textDim mt-1"></div>
+            <div id="ct-d-history" class="ct-chips mt-3"></div>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <button id="ct-d-again" type="button" class="ct-btn ct-btn-primary">Again</button>
+              <button id="ct-d-setup" type="button" class="ct-btn">Back to setup</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

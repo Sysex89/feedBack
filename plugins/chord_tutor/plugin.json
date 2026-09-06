@@ -1,0 +1,12 @@
+{
+  "id": "chord_tutor",
+  "name": "Chord Tutor",
+  "version": "0.1.0",
+  "bundled": true,
+  "private": false,
+  "description": "Learn movable, barre-free chord shapes around the circle of fifths and fourths.",
+  "category": "practice",
+  "nav": { "label": "Chords", "screen": "plugin-chord_tutor" },
+  "screen": "screen.html",
+  "script": "screen.js"
+}
