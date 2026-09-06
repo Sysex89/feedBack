@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Chord Tutor plugin (bundled, `plugins/chord_tutor/`).** A practice screen
+  for movable chord shapes: every voicing is closed-position (no open strings,
+  no barres — one finger per string, unused strings muted), built from interval
+  formulas and transposed to any root. 245 shapes across 15 chord types (major,
+  minor, dim, aug, sus2, sus4, 7, m7, maj7, dim7, m7♭5, mMaj7, 6, m6, add9)
+  on 3- and 4-string sets, each validated at build time (pitch-class set,
+  no-barre, finger order, ≤ 4-fret span, placeable for all 12 roots). An
+  interactive circle of fifths — or, with one toggle, circle of fourths —
+  selects the key, highlights its diatonic chords, and drives a Browse mode
+  (fretboard diagrams with finger / interval / note labels, WebAudio preview)
+  and a timed Drill mode (random, walk-the-circle, or chords-in-key prompts
+  with hidden-until-reveal shapes). Frontend-only; pure theory/shape/diagram/
+  drill modules are Node-testable under `plugins/chord_tutor/tests/`.
 - **Core reader for source rigs (feedpak 1.18.0).** A pack can declare what a
   MIDI part should sound like by binding a rig; core now reads that binding and
   hands it to the client instead of dropping it. Three parts: the
